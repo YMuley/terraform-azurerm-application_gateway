@@ -81,7 +81,6 @@ resource "azurerm_application_gateway" "application_gateway" {
         protocol = http_listener.value.protocol
         ssl_certificate_name  = http_listener.value.ssl_certificate_name
         firewall_policy_id  = length(regexall("^waf", lower(each.value.sku.tier))) > 0  && http_listener.value.web_application_firewall_name != null ? var.web_application_firewall_output[http_listener.value.web_application_firewall_name].id: null
-        ssl_profile_name = http_listener.value.ssl_profile_name
         dynamic"custom_error_configuration" {
           for_each = http_listener.value.custom_error_configuration
           content {
@@ -140,7 +139,7 @@ resource "azurerm_application_gateway" "application_gateway" {
       
     }
 
-    dynamic"request_routing_rule" {
+    dynamic "request_routing_rule" {
       for_each = each.value.request_routing_rule
       content {
       name = request_routing_rule.value.name
@@ -156,8 +155,8 @@ resource "azurerm_application_gateway" "application_gateway" {
     }
   
     global {
-      request_buffering_enabled = each.value.request_buffering_enabled 
-      response_buffering_enabled = each.value.response_buffering_enabled
+      request_buffering_enabled = each.value.global.request_buffering_enabled 
+      response_buffering_enabled = each.value.global.response_buffering_enabled
     }
     
     dynamic "ssl_certificate" {
@@ -274,7 +273,7 @@ resource "azurerm_application_gateway" "application_gateway" {
         }
 
         dynamic "request_header_configuration" {
-          for_each = each.value.request_header_configuration
+          for_each = rewrite_rule_set.value.request_header_configuration
           content {
           header_name = request_header_configuration.value.header_name
           header_value = request_header_configuration.value.header_value            
@@ -282,7 +281,7 @@ resource "azurerm_application_gateway" "application_gateway" {
         }
 
         dynamic "response_header_configuration" {
-          for_each = each.value.response_header_configuration
+          for_each = rewrite_rule_set.value.response_header_configuration
           content {
           header_name = response_header_configuration.value.header_name
           header_value = response_header_configuration.value.header_value            
@@ -291,7 +290,7 @@ resource "azurerm_application_gateway" "application_gateway" {
         }
 
         dynamic "url" {
-        for_each = each.value.url
+        for_each = rewrite_rule_set.value.url
           content {
           path = url.value.path
           query_string = url.value.query_string
