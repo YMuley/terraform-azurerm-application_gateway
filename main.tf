@@ -6,9 +6,9 @@ resource "azurerm_application_gateway" "application_gateway" {
     tags = each.value.tags
 
     sku {
-        name = each.value.skue.sku_name
+        name = each.value.sku.sku_name
         tier = each.value.sku.tier
-        capacity = each.value.capacity
+        capacity = each.value.sku.capacity
     }
 
     enable_http2 = each.value.enable_http2
@@ -35,7 +35,7 @@ resource "azurerm_application_gateway" "application_gateway" {
       private_ip_address = frontend_ip_configuration.value.private_ip_address == null || frontend_ip_configuration.value.private_ip_address_allocation == null ? null : frontend_ip_configuration.value.private_ip_address
       public_ip_address_id = frontend_ip_configuration.value.public_ip_name == null ? null : var.public_ip_output[frontend_ip_configuration.value.public_ip_name].id
       private_ip_address_allocation = frontend_ip_configuration.value.private_ip_address_allocation == null ? null : frontend_ip_configuration.value.private_ip_address_allocation
-      private_link_configuration_name = each.value.private_link_configuration_name
+      private_link_configuration_name = frontend_ip_configuration.value.private_link_configuration_name
     }
     }
 
