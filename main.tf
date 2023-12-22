@@ -6,7 +6,7 @@ resource "azurerm_application_gateway" "application_gateway" {
     tags = each.value.tags
 
     sku {
-        name = each.value.sku.sku_name
+        name = each.value.sku.name
         tier = each.value.sku.tier
         capacity = each.value.sku.capacity
     }
