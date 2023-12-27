@@ -81,7 +81,7 @@ resource "azurerm_application_gateway" "application_gateway" {
         protocol = http_listener.value.protocol
         ssl_certificate_name  = http_listener.value.ssl_certificate_name
         firewall_policy_id  = length(regexall("^waf", lower(each.value.sku.tier))) > 0  && http_listener.value.web_application_firewall_name != null ? var.web_application_firewall_output[http_listener.value.web_application_firewall_name].id: null
-        dynamic"custom_error_configuration" {
+        dynamic "custom_error_configuration" {
           for_each = http_listener.value.custom_error_configuration
           content {
            status_code = custom_error_configuration.value.status_code
@@ -93,7 +93,7 @@ resource "azurerm_application_gateway" "application_gateway" {
     }
 
     dynamic "identity" {
-      for_each = length(keys(each.value.identity)) > 0 ? each.value.identity : []
+      for_each = length([for identity_key in each.value.identity : keys(identity_key)]) > 0 ? each.value.identity : []    #length(keys(each.value.identity))
       content {
       type = identity.value.type
       identity_ids = var.user_assigned_identity_output[identity.value.identity_ids ].id
