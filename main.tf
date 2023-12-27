@@ -96,7 +96,7 @@ resource "azurerm_application_gateway" "application_gateway" {
       for_each = length([for identity_key in each.value.identity : keys(identity_key)]) > 0 ? each.value.identity : []    #length(keys(each.value.identity))
       content {
       type = identity.value.type
-      identity_ids = var.user_assigned_identity_output[identity.value.identity_ids ].id
+      identity_ids = var.user_assigned_identity_output[identity.value.identity_ids].id
       }
        
     }
@@ -109,7 +109,7 @@ resource "azurerm_application_gateway" "application_gateway" {
           for_each = private_link_configuration.value.ip_configuration
           content{
             name = ip_configuration.value.name
-            subnet_id = var.subnet_output[ip_configuration.value.subnet_name]
+            subnet_id = var.subnet_output[ip_configuration.value.subnet_name].id
             private_ip_address_allocation = ip_configuration.value.private_ip_address != null ? "Static" : ip_configuration.value.private_ip_address_allocation
             primary = ip_configuration.value.primary
             private_ip_address = ip_configuration.value.private_ip_address
