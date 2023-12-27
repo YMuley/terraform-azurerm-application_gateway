@@ -102,7 +102,7 @@ resource "azurerm_application_gateway" "application_gateway" {
     }
     
     dynamic"private_link_configuration" {
-      for_each = length(keys(each.value.private_link_configuration)) > 0 ? each.value.private_link_configuration : []
+      for_each = length([for private_link_key in each.value.private_link_configuration : keys(private_link_key) ])  > 0 ? each.value.private_link_configuration : []          #length(keys(each.value.private_link_configuration))
       content {
         name = private_link_configuration.value.name
         dynamic "ip_configuration" {
