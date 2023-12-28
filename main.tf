@@ -96,7 +96,7 @@ resource "azurerm_application_gateway" "application_gateway" {
       for_each = length([for identity_key in each.value.identity : keys(identity_key)]) > 0 ? each.value.identity : []    #length(keys(each.value.identity))
       content {
       type = identity.value.type
-      identity_ids = var.user_assigned_identity_output[element(identity.value.identity_ids,0)].id
+      identity_ids = var.user_assigned_identity_output[tostring(element(identity.value.identity_ids,0))].id
       }
        
     }
@@ -273,7 +273,7 @@ resource "azurerm_application_gateway" "application_gateway" {
         }
 
         dynamic "request_header_configuration" {
-          for_each = rewrite_rule_set.value.request_header_configuration
+          for_each = rewrite_rule.value.request_header_configuration
           content {
           header_name = request_header_configuration.value.header_name
           header_value = request_header_configuration.value.header_value            
@@ -281,7 +281,7 @@ resource "azurerm_application_gateway" "application_gateway" {
         }
 
         dynamic "response_header_configuration" {
-          for_each = rewrite_rule_set.value.response_header_configuration
+          for_each = rewrite_rule.value.response_header_configuration
           content {
           header_name = response_header_configuration.value.header_name
           header_value = response_header_configuration.value.header_value            
@@ -290,7 +290,7 @@ resource "azurerm_application_gateway" "application_gateway" {
         }
 
         dynamic "url" {
-        for_each = rewrite_rule_set.value.url
+        for_each = rewrite_rule.value.url
           content {
           path = url.value.path
           query_string = url.value.query_string
