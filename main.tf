@@ -96,7 +96,10 @@ resource "azurerm_application_gateway" "application_gateway" {
       for_each = length([for identity_key in each.value.identity : keys(identity_key)]) > 0 ? each.value.identity : []    #length(keys(each.value.identity))
       content {
       type = identity.value.type
-      identity_ids = flatten([ for user_assigned_identity in var.user_assigned_identity_output : user_assigned_identity.id  if can(match(identity.value.identity_ids,user_assigned_identity.name)) == true ]) #var.user_assigned_identity_output[tostring(join(" ",flatten(toset(identity.value.identity_ids))))].id
+      identity_ids = flatten([
+    for user_assigned_identity in var.user_assigned_identity_output : 
+    can(match(identity.value.identity_ids, user_assigned_identity.name)) == true ? [user_assigned_identity.id] : []
+  ]) #flatten([ for user_assigned_identity in var.user_assigned_identity_output : user_assigned_identity.id  if can(match(identity.value.identity_ids,user_assigned_identity.name)) == true ]) #var.user_assigned_identity_output[tostring(join(" ",flatten(toset(identity.value.identity_ids))))].id
       }
        
     }
