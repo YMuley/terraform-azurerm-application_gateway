@@ -123,8 +123,8 @@ resource "azurerm_application_gateway" "application_gateway" {
       for_each = each.value.probe
       content {
         name = probe.value.name
-        host = probe.value.pick_host_name_from_backend_http_settings != true ? null : probe.value.host
-        pick_host_name_from_backend_http_settings = probe.value.pick_host_name_from_backend_http_settings == null ? false : probe.value.pick_host_name_from_backend_http_settings
+        host = probe.value.pick_host_name_from_backend_http_settings != true ? probe.value.host : null
+        pick_host_name_from_backend_http_settings = probe.value.pick_host_name_from_backend_http_settings == null || false ? false : probe.value.pick_host_name_from_backend_http_settings
         interval = probe.value.interval
         protocol = probe.value.protocol
         path = probe.value.path
