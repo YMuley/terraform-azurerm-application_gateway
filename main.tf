@@ -200,8 +200,8 @@ resource "azurerm_application_gateway" "application_gateway" {
    }
 
     
-      firewall_policy_id = length(regexall("^waf", lower(each.value.sku.tier))) > 0 && each.value.waf_configuration != null ? var.web_application_firewall_output[each.value.web_application_firewall_name].id: null 
-      force_firewall_policy_association = length(regexall("^waf", lower(each.value.sku.tier))) > 0 && each.value.waf_configuration != null ? true : false
+    #  firewall_policy_id = length(regexall("^waf", lower(each.value.sku.tier))) > 0 && each.value.waf_configuration != null ? var.web_application_firewall_output[each.value.web_application_firewall_name].id: null 
+    #  force_firewall_policy_association = length(regexall("^waf", lower(each.value.sku.tier))) > 0 && each.value.waf_configuration != null ? true : false
 
     dynamic "waf_configuration" {
       for_each = length(regexall("^waf", lower(each.value.sku.tier))) > 0 ? each.value.waf_configuration : []
